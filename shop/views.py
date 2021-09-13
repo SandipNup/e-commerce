@@ -3,50 +3,33 @@ from django.http import HttpResponse
 from rest_framework import generics, serializers
 from .serializers import *
 from .models import *
+from rest_framework import viewsets
 
  # Create your views here.
 # def index(request):
 #     return HttpResponse("Welcome to online shop.")
 
 
+class UserTypeViewSet(viewsets.ModelViewSet):
+    queryset = UserExtended.objects.all()
+    serializer_class = UserTypeSerializer
 
-class ListVendor(generics.ListCreateAPIView):
-    queryset = Vendor.objects.all()
-    serializer_class = VendorSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = UserExtended.objects.all()
+    serializer_class = UserSerializer
 
-class DetailVendor(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Vendor.objects.all()
-    serializer_class = VendorSerializer
 
-class ListCategory(generics.ListCreateAPIView):
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-class DetailCategory(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
 
-class ListCustomer(generics.ListCreateAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-
-class DetailCustomer(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-
-class ListProduct(generics.ListCreateAPIView):
+class ProductViewSet(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
 
-class DetailProduct(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Products.objects.all()
-    serializer_class = ProductSerializer
 
-class ListOrder(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-class DetailOrder(generics.RetrieveUpdateDestroyAPIView):
+class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 

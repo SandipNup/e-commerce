@@ -2,8 +2,17 @@ from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 
+class UserTypeSerializer(serializers.ModelSerializer):
 
-class VendorSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = {
+            'id'
+            'user_type'
+        }
+        model = UserType
+        fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = {
@@ -14,7 +23,7 @@ class VendorSerializer(serializers.ModelSerializer):
             'email'
             'password'
         }
-        model = Vendor
+        model = UserExtended
         fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -28,19 +37,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-class CustomerSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        fields = {
-            'id'
-            'first_name'
-            'last_name'
-            'phone'
-            'email'
-            'password'
-        }
-        model = Customer
-        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
 
