@@ -8,10 +8,17 @@ router.register(r'category', views.CategoryViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'product', views.ProductViewSet)
 router.register(r'order', views.OrderViewSet)
+# router.register(r'register', views.RegisterUser.as_view())
+# router.register(r'login', views.LoginUser.as_view())
+
+
 
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('register', views.RegisterUser.as_view()),
+    path('register', views.LoginUser.as_view())
+
 ]
 
 

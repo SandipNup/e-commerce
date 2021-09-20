@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email'
             'password'
         }
-        model = UserExtended
+        model = User
         fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
