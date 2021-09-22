@@ -45,15 +45,13 @@ class RegisterUser(APIView):
         username = request.data.get("username", None)
         password = request.data.get("password", None)
         user_type = request.data.get("user_type", None)
-        phone = request.data.get("phone", None)
 
         user_type_instance = UserType.objects.get(id=user_type)
 
         user = User(
             username = username,
             password=password,
-            user_type=user_type_instance,
-            phone=phone
+            user_type=user_type_instance
         )
         user.save()
         
@@ -65,31 +63,30 @@ class RegisterUser(APIView):
         return Response(response)
 
 
-
 class LoginUser(APIView):
 
     def get(self,request):
         username = request.data["username"]
         password = request.data["password"]
 
-        user = UserExtended.object.filter(username= username, password= password)
+        user = User.objects.get(username= username, password= password)
 
         if user:
             token = Token.objects.get(user=user)
+
             if token:
                 pass
             else:
                 token = Token.objects.create(user=user)
 
-
-            return {
+            return Response({
                 "username": user.username,
                 "token": token.key
-            }
+            })
         else:
-            return {
+            return Response({
                 "message": "User does not exist"
-            }
+            })
 
 
 

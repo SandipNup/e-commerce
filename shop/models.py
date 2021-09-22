@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -10,8 +11,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
-
-
 from django.contrib.auth.models import PermissionsMixin
 
 
@@ -46,13 +45,13 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, username, password, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_staff', True)
 
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(username, password, **extra_fields)
 
-# User.objects.all()        
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), blank=True)
@@ -71,7 +70,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
     is_active = models.BooleanField(_('active'), default=True)
+    user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     objects = UserManager()
     USERNAME_FIELD = 'username'
@@ -102,10 +107,54 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
     def __str__(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        return '{}'.format(self.username)
 
     def register(self):
         self.save()
+
+
+# all products added by vendor group by category
+
+{
+    "jacket": [
+        {
+            "jacked1"
+        },
+        {
+            "jacked2"
+        },
+    ],
+    "pant" : [
+        {
+            "pant1"
+        },
+        {
+            "pant2"
+        },
+    ],
+}
+
+
+# all products sold from particular vendor
+{
+    "jacket": [
+        {
+            "jacked1"
+        },
+        {
+            "jacked2"
+        },
+    ],
+    "pant" : [
+        {
+            "pant1"
+        },
+        {
+            "pant2"
+        },
+    ],
+}
+
 
 # Create your models here.
 class Category(models.Model):
@@ -168,6 +217,12 @@ class Order(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.quantity, self.product)
+
+    
+    def save(self):
+        final_amount = self.product.price * self.quantity
+        self.price = final_amount
+        super.save()
 
 
 
