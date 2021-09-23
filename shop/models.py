@@ -113,47 +113,70 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.save()
 
 
-# all products added by vendor group by category
+# all products added by particular vendor group by category
 
-{
-    "jacket": [
-        {
-            "jacked1"
-        },
-        {
-            "jacked2"
-        },
-    ],
-    "pant" : [
-        {
-            "pant1"
-        },
-        {
-            "pant2"
-        },
-    ],
-}
+# {
+#     "jacket": [
+#         {
+#             "jacked1"
+#         },
+#         {
+#             "jacked2"
+#         },
+#     ],
+#     "pant" : [
+#         {
+#             "pant1"
+#         },
+#         {
+#             "pant2"
+#         },
+#     ],
+# }
 
 
-# all products sold from particular vendor
-{
-    "jacket": [
-        {
-            "jacked1"
-        },
-        {
-            "jacked2"
-        },
-    ],
-    "pant" : [
-        {
-            "pant1"
-        },
-        {
-            "pant2"
-        },
-    ],
-}
+
+# # all products sold from particular vendor
+# {
+#     "jacket": [
+#         {
+#             "jacked1"
+#         },
+#         {
+#             "jacked2"
+#         },
+#     ],
+#     "pant" : [
+#         {
+#             "pant1"
+#         },
+#         {
+#             "pant2"
+#         },
+#     ],
+# }
+
+# # total product sold and total amount
+# {
+#     "jacket": [
+#         {
+#             "jacked1",
+#             "quantity": 2,
+#             "price": 100
+#         },
+#         {
+#             "jacked2"
+#         },
+#     ],
+#     "pant" : [
+#         {
+#             "pant1"
+#         },
+#         {
+#             "pant2"
+#         },
+#     ],
+# }
 
 
 # Create your models here.
