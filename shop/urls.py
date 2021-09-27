@@ -18,7 +18,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('register', views.RegisterUser.as_view()),
     path('login', views.LoginUser.as_view()),
-    path('vendor-dashboard-products', views.VendorAddedProduct.as_view())
+    path('vendor-dashboard-products', views.VendorAddedProduct.as_view()),
+    path('vendor-products', views.VendorAddedProductQuery.as_view()),
+    path('vendor-ordered-products', views.LoogedInVendorOrderedProducts.as_view())
 
 
 ]

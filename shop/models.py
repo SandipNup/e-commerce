@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
+from django.db.models.fields.related import ManyToManyField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -178,7 +179,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 #     ],
 # }
 
-
+# 1 - M
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -204,7 +205,116 @@ class Category(models.Model):
 #     # to save the data
 #     def register(self):
 #         self.save()
-  
+
+
+# Products.object.select_related('category')
+
+# response = {
+#     "name" : "sandip",
+#     "price" : 10,
+#     "category" : {
+#         "name": "",
+#         "created_by": ""
+#     },
+#     "created_by" : "vendor_id",
+#     "description"  : "sandip",
+#     "imageUrl" : "sandip"
+# }
+
+
+# Products.objects.all()
+
+# response = {
+#     "name" : "sandip",
+#     "price" : 10,
+#     "category" : 1,
+#     "created_by" : "vendor_id",
+#     "description"  : "sandip",
+#     "imageUrl" : "sandip"
+# }
+
+# 1. Reverse foregin Key
+
+
+# 2. ManyToManyField
+
+
+# Products.objects.prefetch_related('category')
+# {"name" : "sandip",
+#     "price" : 10,
+#     "category" : [
+#         {
+#         "name": "",
+#         "created_by": ""
+#         },
+#         {
+#         "name": "",
+#         "created_by": ""
+#         }
+#     ],
+#     "created_by" : "vendor_id",
+#     "description"  : "sandip",
+#     "imageUrl" : "sandip"
+# }
+# 1        ->  M
+# Category, Products
+
+# Category.objects.prefetch_related('products_set')
+
+# Products.object.filter(category__name = 'jeans')
+
+
+#[
+#     {
+#         "jeans": [
+#             {
+#                 "id": 1,
+#                 "name": "LBD jeans",
+#                 "price": 500,
+#                 "category_id": 1,
+#                 "created_by_id": 18,
+#                 "description": "good jeans",
+#                 "imageUrl": null
+#             },
+#             {
+#                 "id": 2,
+#                 "name": "American Eagle",
+#                 "price": 1000,
+#                 "category_id": 1,
+#                 "created_by_id": 18,
+#                 "description": "shhshsh",
+#                 "imageUrl": null
+#             }
+#         ]
+#     },
+#     {
+#         "jackets": [
+#             {
+#                 "id": 3,
+#                 "name": "jacket1",
+#                 "price": 500,
+#                 "category_id": 2,
+#                 "created_by_id": 18,
+#                 "description": null,
+#                 "imageUrl": null
+#             },
+#             {
+#                 "id": 4,
+#                 "name": "jacket2",
+#                 "price": 10000,
+#                 "category_id": 2,
+#                 "created_by_id": 18,
+#                 "description": null,
+#                 "imageUrl": null
+#             }
+#         ]
+#     }
+# ]
+
+# fetch pk of all category of a product
+
+# fetch category pk
+
 
 class Products(models.Model):
     name = models.CharField(max_length=60)
@@ -245,7 +355,7 @@ class Order(models.Model):
     def save(self):
         final_amount = self.product.price * self.quantity
         self.price = final_amount
-        super.save()
+        super().save()
 
 
 

@@ -1,7 +1,10 @@
+import re
+from django.db.models.query import QuerySet
 from django.db.models.signals import pre_delete
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import generics, serializers
+from rest_framework import response
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -11,6 +14,8 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from .serializers import ProductSerializer
 import pandas as pd
+from django.db.models import Prefetch
+import json
 
 
  # Create your views here.
@@ -102,6 +107,8 @@ class VendorAddedProduct(APIView):
         user = request.user
         vendor_user_type = UserType.objects.get(user_type = 'Vendor')
 
+        print(Products.objects.select_related('category'))
+
         if user.user_type.id == vendor_user_type.id:
             vendor_added_products_list = list(Products.objects.filter(created_by=user).values())
             # serializer = ProductSerializer(vendor_added_products, many=True)
@@ -132,6 +139,84 @@ class VendorAddedProduct(APIView):
                 })
                     
             return Response(final_json)
+
+        else:
+            raise Exception("User is not Vendor")
+
+
+class VendorAddedProductQuery(APIView):
+    authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsVendor]
+
+    def get(self, request):
+        user = request.user
+        vendor_user_type = UserType.objects.get(user_type = 'Vendor')
+
+        if user.user_type.id == vendor_user_type.id:
+            # print(Category.objects.prefetch_related(''))
+            response_query = Category.objects.prefetch_related(Prefetch('products_set', queryset=Products.objects.filter(created_by__id=user.id))).all()
+
+            category = Category.objects.all()  # 3
+           
+            response_arr = []
+
+            for category in response_query:
+                product = category.products_set.all()  # data base operation is not performed
+                response = ProductSerializer(product, many=True)
+                json_response = json.dumps(response.data)
+
+                response_arr.append({
+                    category.name: json_response
+                })
+            print(response_arr)    
+                                  
+            return Response(response_arr)
+
+        else:
+            raise Exception("User is not Vendor")
+
+
+class LoogedInVendorOrderedProducts(APIView):
+    authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsVendor]
+
+    def get(self, request):
+        user = request.user
+        vendor_user_type = UserType.objects.get(user_type = 'Vendor')
+
+        
+        if user.user_type.id == vendor_user_type.id:
+            # print(Category.objects.prefetch_related(''))
+
+            # get all the ordered products id of a vendor
+            vendor_product_orders = Order.objects.filter(product__created_by__id=user.id).values_list("product__id").all()
+
+            if vendor_product_orders:
+                product_id = []
+                for each_product in vendor_product_orders:
+                    product_id.append(each_product[0])
+
+                # queryset filter by products id
+                print(product_id)
+                response_query = Category.objects.prefetch_related(Prefetch('products_set', queryset=Products.objects.filter(id__in = product_id))).all()
+
+                category = Category.objects.all()  # 3
+            
+                response_arr = []
+
+                for category in response_query:
+                    product = category.products_set.all()  # data base operation is not performed
+                    response = ProductSerializer(product, many=True)
+                    json_response = json.dumps(response.data)
+
+                    response_arr.append({
+                        category.name: json_response
+                    })
+                print(response_arr)    
+                                    
+                return Response(response_arr)
+            else:
+                return Response("Vendor does not have ordered products")
 
         else:
             raise Exception("User is not Vendor")
